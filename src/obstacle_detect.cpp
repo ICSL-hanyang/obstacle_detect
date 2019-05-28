@@ -17,7 +17,7 @@ void rplidarCB(const sensor_msgs::LaserScan::ConstPtr &msg)
     double max_distance = 2.0;
     uint8_t n = 0;
 
-    for(uint16_t i = 0; i<=360; i++)
+    for(uint16_t i = 0; i<360; i++)
     {
         if(i%5==0 && i!=0)
         {
@@ -40,7 +40,7 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "obstacle_detect_node");
 	ros::NodeHandle nh("~");
 
-	ros::Rate rate(10);
+	ros::Rate rate(5);
 
     ros::Subscriber rplidar_sub = nh.subscribe("/scan", 10, &rplidarCB);
     ros::Publisher rplidar_pub = nh.advertise<obstacle_detect::VectorPair>("vector_pair",10);

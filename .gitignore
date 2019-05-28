@@ -1,2 +1,4 @@
 .vscode/c_cpp_properties.json
 .vscode/settings.json
+.vscode/ipch/875841864bee78a/mmap_address.bin
+.vscode/ipch/875841864bee78a/obstacle_detect.ipch

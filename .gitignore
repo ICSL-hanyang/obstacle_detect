@@ -3,4 +3,9 @@
 .vscode/ipch/875841864bee78a/mmap_address.bin
 .vscode/ipch/875841864bee78a/obstacle_detect.ipch
 .vscode/ipch/e57289190fa0e333/mmap_address.bin
+<<<<<<< HEAD
 .vscode/ipch/ec553bdd0832a461/mmap_address.bin
+=======
+.vscode/ipch/7032a6d3253d587f/obstacle_detect.ipch
+.vscode/ipch/7032a6d3253d587f/mmap_address.bin
+>>>>>>> 6ebb07aea236484ddc4513e8e74a4d092b00f690

@@ -44,12 +44,11 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "obstacle_detect_node");
 	ros::NodeHandle nh("~");
 	ros::Rate rate(5);
-    nh.getParamCached("max_range", max_range);
     ros::Subscriber rplidar_sub = nh.subscribe("/scan", 10, &rplidarCB);
     ros::Publisher rplidar_pub = nh.advertise<obstacle_detect::VectorPair>("vector_pair",10);
     while (ros::ok())
 	{
-        
+        nh.getParamCached("max_range", max_range);
         for(uint16_t i=0; i<num; i++)
         {
             obstacle_detect::Pair pair;

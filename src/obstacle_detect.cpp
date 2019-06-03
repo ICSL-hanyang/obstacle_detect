@@ -10,11 +10,11 @@ obstacle_detect::VectorPair vector_pair;
 double rp_arr[360]={0.0,};
 uint8_t degree = 5; // 몇도 마다 자를래
 int num = 360/degree; // 원하는 각도로 잘랐을때 나오는 구역의 수
-
+double max_range = 2.0;  //max_range 보다 작은 값만 받을거다!
+    
 void rplidarCB(const sensor_msgs::LaserScan::ConstPtr &msg)
 {
     double msg_arr[num]={0.0,}; //배열 초기화
-    double max_distance = 2.0;  //max_distance 보다 작은 값만 받을거다!
     uint8_t n = 0;              //카운트용
 
     // printf("0 : %lf\n",msg->ranges[0]);
@@ -26,7 +26,7 @@ void rplidarCB(const sensor_msgs::LaserScan::ConstPtr &msg)
         if(i%degree == degree-1)     //360개의 센서를 degree 만큼 나누고 평균낼거임 
         {
             msg_arr[n] /= degree;   //0부터 시작하니까 나머지가 degree-1일때 평균내야됨
-            if(msg_arr[n] >= max_distance) //max_distance보다 큰값들은 그냥 무한대 처리
+            if(msg_arr[n] >= max_range) //max_range보다 큰값들은 그냥 무한대 처리
                 msg_arr[n] = std::numeric_limits<double>::infinity();
             n++;                    //n은 degree만큼 나눈 구역을 하나하나 검사하기위해 증가해주고
             if(n>=num) break;       //0부터 시작하니까 n이 num이 되면 스탑
@@ -43,9 +43,8 @@ int main(int argc, char **argv)
 {
     ros::init(argc, argv, "obstacle_detect_node");
 	ros::NodeHandle nh("~");
-
 	ros::Rate rate(5);
-
+    nh.getParamCached("max_range", max_range);
     ros::Subscriber rplidar_sub = nh.subscribe("/scan", 10, &rplidarCB);
     ros::Publisher rplidar_pub = nh.advertise<obstacle_detect::VectorPair>("vector_pair",10);
     while (ros::ok())

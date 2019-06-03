@@ -1,6 +1,6 @@
 <launch>
     
-	<arg name="max_range" default="2"/>
+	<arg name="detecting_range" default="2"/>
     <!-- <arg name="user_hostname" default="brontes"/>
     <arg name="user_ip" default="192.168.0.7"/>
     <arg name="user_name" default="heromin"/>
@@ -35,7 +35,7 @@
     <arg name="obstacle_detect_config_yaml" default="$(find obstacle_detect)/config/config.yaml" />
     <node pkg="obstacle_detect" type="obstacle_detect_node" name="obstacle_detect_node" output="screen" respawn="true">
         <rosparam command="load" file="$(arg obstacle_detect_config_yaml)"/>
-		<param name="max_range" value="$(arg max_range)"/>
+		<param name="detecting_range" value="$(arg detecting_range)"/>
     </node>
 
 </launch>

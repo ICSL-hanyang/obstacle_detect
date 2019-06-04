@@ -57,7 +57,7 @@ int main(int argc, char **argv)
             if(pair.distance != std::numeric_limits<double>::infinity()) 
             {
                 vector_pair.data.push_back(pair);
-                printf("angle : %10lf \t distance : %10lf\n", pair.angle, pair.distance);
+                //printf("angle : %10lf \t distance : %10lf\n", pair.angle, pair.distance);
             }
         }
         rplidar_pub.publish(vector_pair);

@@ -57,12 +57,10 @@ int main(int argc, char **argv)
         {
             pair.distance = rp_arr[i];
             pair.angle = degree * i + (degree - 1)/2; //5*i+2;
-            //180/degree(5) = 36 355/degree(5) = 71 
-
+            // 180/degree(5) = 36 355/degree(5) = 71 
             if(pair.distance != std::numeric_limits<double>::infinity()) 
             {
-                
-                if(pair.angle >= 180/degree && pair.angle < 360/degree) 
+                if(pair.angle >= 180 && pair.angle <= 360) 
                 {
                     if(long_pair.distance < pair.distance) 
                     {
@@ -70,11 +68,11 @@ int main(int argc, char **argv)
                         long_pair.angle = pair.angle;
                     }
                 }
-
                 vector_pair.data.push_back(pair);
-                //printf("angle : %10lf \t distance : %10lf\n", pair.angle, pair.distance);
+                // printf("angle : %10lf \t distance : %10lf\n", pair.angle, pair.distance);
             }
         }
+        // printf("l_ang : %10lf \t long_dis : %10lf \n", long_pair.angle, long_pair.distance);
         rplidar_long_pub.publish(long_pair);
         rplidar_pub.publish(vector_pair);
         vector_pair.data.clear();

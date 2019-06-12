@@ -7,6 +7,8 @@
 #include "obstacle_detect/VectorPair.h"
 
 obstacle_detect::VectorPair vector_pair;
+obstacle_detect::Pair pair;
+obstacle_detect::Pair long_pair;
 double rp_arr[360]={0.0,};
 uint8_t degree = 5; // 몇도 마다 자를래
 int num = 360/degree; // 원하는 각도로 잘랐을때 나오는 구역의 수
@@ -46,20 +48,34 @@ int main(int argc, char **argv)
 	ros::Rate rate(5);
     ros::Subscriber rplidar_sub = nh.subscribe("/scan", 10, &rplidarCB);
     ros::Publisher rplidar_pub = nh.advertise<obstacle_detect::VectorPair>("vector_pair",10);
+    ros::Publisher rplidar_long_pub = nh.advertise<obstacle_detect::Pair>("long_pair",10);
     while (ros::ok())
 	{
+        long_pair.distance = 0;
         nh.getParamCached("detecting_range", detecting_range);
         for(uint16_t i=0; i<num; i++)
         {
-            obstacle_detect::Pair pair;
             pair.distance = rp_arr[i];
             pair.angle = degree * i + (degree - 1)/2; //5*i+2;
+            //180/degree(5) = 36 355/degree(5) = 71 
+
             if(pair.distance != std::numeric_limits<double>::infinity()) 
             {
+                
+                if(pair.angle >= 180/degree && pair.angle < 360/degree) 
+                {
+                    if(long_pair.distance < pair.distance) 
+                    {
+                        long_pair.distance = pair.distance; 
+                        long_pair.angle = pair.angle;
+                    }
+                }
+
                 vector_pair.data.push_back(pair);
                 //printf("angle : %10lf \t distance : %10lf\n", pair.angle, pair.distance);
             }
         }
+        rplidar_long_pub.publish(long_pair);
         rplidar_pub.publish(vector_pair);
         vector_pair.data.clear();
 		ros::spinOnce();

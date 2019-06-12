@@ -6,7 +6,7 @@
     <arg name="user_name" default="heromin"/>
     <arg name="user_password" default="eh2xhtm!88"/>
     <arg name="user_envloader" default="~/catkin_ws/devel/env.sh"/> -->
-
+<!-- 
     <arg name="user_hostname" default="woody"/>
     <arg name="user_ip" default="192.168.0.12"/>
     <arg name="user_name" default="kdh"/>
@@ -14,7 +14,7 @@
     <arg name="user_envloader" default="~/catkin_ws/devel/env.sh"/>
 
     <arg name="multi_user_hostname" default="banshee2"/>
-    <arg name="multi_user_ip" default="192.168.0.32"/>
+    <arg name="multi_user_ip" default="192.168.0.32"/>vg
     <arg name="multi_user_name" default="odroid"/>
     <arg name="multi_user_password" default="icsl5293"/>
     <arg name="multi_user_envloader" default="~/catkin_ws/devel/env.sh"/>
@@ -22,8 +22,8 @@
     <machine name="$(arg multi_user_hostname)" address="$(arg multi_user_ip)" user="$(arg multi_user_name)" password="$(arg multi_user_password)" env-loader="$(arg multi_user_envloader)" default="true" />
     <machine name="$(arg user_hostname)" address="$(arg user_ip)" user="$(arg user_name)" password="$(arg user_password)" env-loader="$(arg user_envloader)" default="true" />
 
-    <node machine="$(arg multi_user_hostname)" name="rplidarNode" pkg="rplidar_ros" type="rplidarNode" output="screen">
-    <!-- <node name="rplidarNode" pkg="rplidar_ros" type="rplidarNode" output="screen"> -->
+    <node machine="$(arg multi_user_hostname)" name="rplidarNode" pkg="rplidar_ros" type="rplidarNode" output="screen"> -->
+    <node name="rplidarNode" pkg="rplidar_ros" type="rplidarNode" output="screen">
         <param name="serial_port" type="string" value="/dev/ttyUSB0"/>
         <param name="serial_baudrate" type="int" value="115200"/>
         <!--A1/A2 -->

@@ -60,9 +60,9 @@ void rplidarCB(const sensor_msgs::LaserScan::ConstPtr &msg)
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "obstacle_detect_node");
-	ros::NodeHandle nh("~");
+	ros::NodeHandle nh("");
 	ros::Rate rate(5);
-    ros::Subscriber rplidar_sub = nh.subscribe("/scan", 10, &rplidarCB);
+    ros::Subscriber rplidar_sub = nh.subscribe("camila1/laser/scan", 10, &rplidarCB) 
     ros::Publisher rplidar_pub = nh.advertise<obstacle_detect::VectorPair>("vector_pair",10);
     // ros::Publisher rplidar_pub_inf = nh.advertise<obstacle_detect::VectorPair>("vector_pair_inf",10);
     ros::Publisher rplidar_long_pub = nh.advertise<obstacle_detect::Pair>("longest",10);

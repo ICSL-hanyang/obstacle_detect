@@ -40,8 +40,8 @@ void rplidarCB(const sensor_msgs::LaserScan::ConstPtr &msg)
             {
                 msg_arr[n] /= (degree - inf_n);   //0부터 시작하니까 나머지가 degree-1일때 평균내야됨
             }
-             printf("msg : %lf\n", msg->ranges[i]);
-             printf("deg : %d  inf_n : %d  msg : %lf\n", degree, inf_n, msg_arr[n]);
+            //  printf("msg : %lf\n", msg->ranges[i]);
+            //  printf("deg : %d  inf_n : %d  msg : %lf\n", degree, inf_n, msg_arr[n]);
             n++;                    //n은 degree만큼 나눈 구역을 하나하나 검사하기위해 증가해주고
             inf_n = 0;
             if(n>=num) break;       //0부터 시작하니까 n이 num이 되면 스탑
@@ -49,7 +49,7 @@ void rplidarCB(const sensor_msgs::LaserScan::ConstPtr &msg)
         if(msg->ranges[i] != std::numeric_limits<double>::infinity())
         {
             msg_arr[n] += msg->ranges[i];
-            printf("arr msg : %lf\n", msg_arr[n]);
+            // printf("arr msg : %lf\n", msg_arr[n]);
         }
         else
         {

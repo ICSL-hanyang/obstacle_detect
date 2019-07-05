@@ -5,15 +5,9 @@
 #include <sensor_msgs/LaserScan.h>
 #include "obstacle_detect/Pair.h"
 #include "obstacle_detect/VectorPair.h"
-// #include <vector>
+
 obstacle_detect::VectorPair vector_pair;
-// obstacle_detect::VectorPair vector_infinity;
-//std::vector<obstacle_detect::Pair> vector_infinity;
-//obstacle_detect::VectorPair vector_infinity;  // infinity들을 저장하는 벡터
 obstacle_detect::Pair pair;
-// obstacle_detect::Pair inf_pair;
-// obstacle_detect::Pair long_pair;
-// obstacle_detect::Pair min_infinity;  //거리가 무한대인 값들중에 진행방향과 가장 가까운 각도
 double rp_arr[360]={0.0,};
 uint8_t degree = 5; // 몇도 마다 자를래
 int num = 360/degree; // 원하는 각도로 잘랐을때 나오는 구역의 수
@@ -32,39 +26,24 @@ void rplidarCB(const sensor_msgs::LaserScan::ConstPtr &msg)
     {                               
         if(i%degree == degree-1)     //360개의 센서를 degree 만큼 나누고 평균낼거임 
         {
-            if(inf_n >= degree)
-            {
-                msg_arr[n] = std::numeric_limits<double>::infinity();
-            }
-            else
-            {
-                msg_arr[n] /= (degree - inf_n);   //0부터 시작하니까 나머지가 degree-1일때 평균내야됨
-            }
+            if(inf_n >= degree) msg_arr[n] = std::numeric_limits<double>::infinity();
+            else msg_arr[n] /= (degree - inf_n);   //0부터 시작하니까 나머지가 degree-1일때 평균내야됨
             //  printf("msg : %lf\n", msg->ranges[i]);
             //  printf("deg : %d  inf_n : %d  msg : %lf\n", degree, inf_n, msg_arr[n]);
             n++;                    //n은 degree만큼 나눈 구역을 하나하나 검사하기위해 증가해주고
             inf_n = 0;
             if(n>=num) break;       //0부터 시작하니까 n이 num이 되면 스탑
         }
-        if(msg->ranges[i] != std::numeric_limits<double>::infinity())
-        {
-            msg_arr[n] += msg->ranges[i];
-            // printf("arr msg : %lf\n", msg_arr[n]);
-        }
-        else
-        {
-            inf_n++;
-        }
+        if(msg->ranges[i] != std::numeric_limits<double>::infinity()) msg_arr[n] += msg->ranges[i];
+        else inf_n++;
     }
     for(uint16_t i = 0; i < num; i++)
     {
         if(msg_arr[i] >= detecting_range) //detecting_range보다 큰값들은 그냥 무한대 처리
             msg_arr[i] = std::numeric_limits<double>::infinity();
-
         rp_arr[i] = msg_arr[i];
     }
-        // printf("------------------------------------------------------\n");
-
+    // printf("------------------------------------------------------\n");
 }
 
 int main(int argc, char **argv)
@@ -89,11 +68,9 @@ int main(int argc, char **argv)
             // printf("angle : %10lf \t distance : %10lf\n", pair.angle, pair.distance);
         }
         rplidar_pub.publish(vector_pair);
-
         vector_pair.data.clear();
 		ros::spinOnce();
 		rate.sleep();
 	}
-
 	return 0;
 }

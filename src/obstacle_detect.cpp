@@ -22,7 +22,7 @@ void rplidarCB(const sensor_msgs::LaserScan::ConstPtr &msg)
 {
     double msg_arr[num]={0.0,}; //배열 초기화
     uint8_t n = 0;              //카운트용
-
+    uint8_t inf_n = 0;          //무한대카운트용
     // printf("0 : %lf\n",msg->ranges[0]);
     // printf("90 : %lf\n",msg->ranges[90]);
     // printf("180 : %lf\n",msg->ranges[180]);
@@ -31,11 +31,19 @@ void rplidarCB(const sensor_msgs::LaserScan::ConstPtr &msg)
     {                               
         if(i%degree == degree-1)     //360개의 센서를 degree 만큼 나누고 평균낼거임 
         {
-            msg_arr[n] /= degree;   //0부터 시작하니까 나머지가 degree-1일때 평균내야됨
+            msg_arr[n] /= degree - inf_n;   //0부터 시작하니까 나머지가 degree-1일때 평균내야됨
             n++;                    //n은 degree만큼 나눈 구역을 하나하나 검사하기위해 증가해주고
+            inf_n = 0;
             if(n>=num) break;       //0부터 시작하니까 n이 num이 되면 스탑
         }
-        msg_arr[n] += msg->ranges[i];
+        if(msg->ranges[i] != std::numeric_limits<double>::infinity())
+        {
+            msg_arr[n] += msg->ranges[i];
+        }
+        else
+        {
+            inf_n++;
+        }
     }
     for(uint16_t i = 0; i < num; i++)
     {

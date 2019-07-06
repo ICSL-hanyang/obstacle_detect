@@ -24,18 +24,20 @@ void rplidarCB(const sensor_msgs::LaserScan::ConstPtr &msg)
     // printf("270 : %lf\n",msg->ranges[270]);
     for(uint16_t i = 0; i<360; i++) //0부터 359도에 대한 센서값을 받아오기위해
     {                               
+        
+        if(msg->ranges[i] != std::numeric_limits<double>::infinity()) msg_arr[n] += msg->ranges[i];
+        else inf_n++;
+        
         if(i%degree == degree-1)     //360개의 센서를 degree 만큼 나누고 평균낼거임 
         {
             if(inf_n >= degree) msg_arr[n] = std::numeric_limits<double>::infinity();
             else msg_arr[n] /= (degree - inf_n);   //0부터 시작하니까 나머지가 degree-1일때 평균내야됨
-            //  printf("msg : %lf\n", msg->ranges[i]);
-            //  printf("deg : %d  inf_n : %d  msg : %lf\n", degree, inf_n, msg_arr[n]);
+            // if(i==4)
+            //     printf("deg : %d  inf_n : %d  msg : %lf\n", degree, inf_n, msg_arr[n]);
             n++;                    //n은 degree만큼 나눈 구역을 하나하나 검사하기위해 증가해주고
             inf_n = 0;
             if(n>=num) break;       //0부터 시작하니까 n이 num이 되면 스탑
         }
-        if(msg->ranges[i] != std::numeric_limits<double>::infinity()) msg_arr[n] += msg->ranges[i];
-        else inf_n++;
     }
     for(uint16_t i = 0; i < num; i++)
     {
@@ -44,6 +46,12 @@ void rplidarCB(const sensor_msgs::LaserScan::ConstPtr &msg)
         rp_arr[i] = msg_arr[i];
     }
     // printf("------------------------------------------------------\n");
+}
+
+int orientationDetect()
+{
+    //
+    return 0;
 }
 
 int main(int argc, char **argv)
@@ -58,15 +66,19 @@ int main(int argc, char **argv)
         nh.getParamCached("detecting_range", detecting_range);
         for(uint16_t i=0; i<num; i++)
         {
+
+            printf("angle : %10lf \t distance : %10lf\n", pair.angle, pair.distance);
             if(rp_arr[i] == std::numeric_limits<double>::infinity())
                 continue;
             pair.distance = rp_arr[i];
             pair.angle = degree * i + (degree - 1)/2; //5*i+2;
             // 180/degree(5) = 36 355/degree(5) = 71 
-
+            
             vector_pair.data.push_back(pair);
-            // printf("angle : %10lf \t distance : %10lf\n", pair.angle, pair.distance);
         }
+        // if( vector_pair.data.empty()==true ) vector_pair.isEmpty = false;
+        // else vector_pair.isEmpty = true;
+
         rplidar_pub.publish(vector_pair);
         vector_pair.data.clear();
 		ros::spinOnce();

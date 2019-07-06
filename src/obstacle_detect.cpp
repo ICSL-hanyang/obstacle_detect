@@ -29,13 +29,19 @@ void rplidarCB(const sensor_msgs::LaserScan::ConstPtr &msg)
     // printf("270 : %lf\n",msg->ranges[270]);
     for(uint16_t i = 0; i<360; i++) //0부터 359도에 대한 센서값을 받아오기위해
     {                               
+        
+        if(msg->ranges[i] != std::numeric_limits<double>::infinity()) msg_arr[n] += msg->ranges[i];
+        else inf_n++;
+        
         if(i%degree == degree-1)     //360개의 센서를 degree 만큼 나누고 평균낼거임 
         {
-            msg_arr[n] /= degree;   //0부터 시작하니까 나머지가 degree-1일때 평균내야됨
+            if(inf_n >= degree) msg_arr[n] = std::numeric_limits<double>::infinity();
+            else msg_arr[n] /= (degree - inf_n);   //0부터 시작하니까 나머지가 degree-1일때 평균내야됨
+            // if(i==4)
+            //     printf("deg : %d  inf_n : %d  msg : %lf\n", degree, inf_n, msg_arr[n]);
             n++;                    //n은 degree만큼 나눈 구역을 하나하나 검사하기위해 증가해주고
             if(n>=num) break;       //0부터 시작하니까 n이 num이 되면 스탑
         }
-        msg_arr[n] += msg->ranges[i];
     }
     for(uint16_t i = 0; i < num; i++)
     {
@@ -57,6 +63,12 @@ void rplidarCB(const sensor_msgs::LaserScan::ConstPtr &msg)
 
 }
 
+int orientationDetect()
+{
+    //
+    return 0;
+}
+
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "obstacle_detect_node");
@@ -73,35 +85,19 @@ int main(int argc, char **argv)
         nh.getParamCached("detecting_range", detecting_range);
         for(uint16_t i=0; i<num; i++)
         {
+
+            printf("angle : %10lf \t distance : %10lf\n", pair.angle, pair.distance);
+            if(rp_arr[i] == std::numeric_limits<double>::infinity())
+                continue;
             pair.distance = rp_arr[i];
             pair.angle = degree * i + (degree - 1)/2; //5*i+2;
             // 180/degree(5) = 36 355/degree(5) = 71 
-
-            if(pair.angle >= 180 && pair.angle <= 360) 
-            {
-                if(long_pair.distance < pair.distance) 
-                {
-                    long_pair.distance = pair.distance; 
-                    long_pair.angle = pair.angle;
-                }
-            }
+            
             vector_pair.data.push_back(pair);
-            // printf("angle : %10lf \t distance : %10lf\n", pair.angle, pair.distance);
         }
-        for(auto &infinity : vector_infinity.data)   //진행방향과 거리가 무한대인 각도의 차이가 최소인 방향을 찾음
-        {   
-            if(fabs(270-min_infinity.angle) > fabs(270-infinity.angle))
-            {
-                min_infinity.angle = infinity.angle;
-                min_infinity.distance = infinity.distance;
-            }
-            long_pair.distance = min_infinity.distance;
-            long_pair.angle = min_infinity.angle;
-            // printf("infan : %10lf \t infdista : %10lf \n", long_pair.angle, long_pair.distance);
-        }
-        //  printf("l_ang : %10lf \t long_dis : %10lf \n", long_pair.angle, long_pair.distance);
+        // if( vector_pair.data.empty()==true ) vector_pair.isEmpty = false;
+        // else vector_pair.isEmpty = true;
 
-        rplidar_long_pub.publish(long_pair);
         rplidar_pub.publish(vector_pair);
         // rplidar_pub_inf.publish(vector_infinity);
 

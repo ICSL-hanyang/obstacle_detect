@@ -73,7 +73,6 @@ int main(int argc, char **argv)
             pair.distance = rp_arr[i];
             pair.angle = degree * i + (degree - 1)/2; //5*i+2;
             // 180/degree(5) = 36 355/degree(5) = 71 
-            
             vector_pair.data.push_back(pair);
         }
         // if( vector_pair.data.empty()==true ) vector_pair.isEmpty = false;

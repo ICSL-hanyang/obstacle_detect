@@ -67,7 +67,7 @@ int main(int argc, char **argv)
         for(uint16_t i=0; i<num; i++)
         {
 
-            printf("angle : %10lf \t distance : %10lf\n", pair.angle, pair.distance);
+            // printf("angle : %10lf \t distance : %10lf\n", pair.angle, pair.distance);
             if(rp_arr[i] == std::numeric_limits<double>::infinity())
                 continue;
             pair.distance = rp_arr[i];

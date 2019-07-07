@@ -17,10 +17,7 @@ double rp_arr[360]={0.0,};
 uint8_t degree = 5; // 몇도 마다 자를래
 int num = 360/degree; // 원하는 각도로 잘랐을때 나오는 구역의 수
 double detecting_range = 2.0;  //detecting_range 보다 작은 값만 받을거다!
-Detection detect;
-double x,y,px,py;
-int sec, psec;
-bool sec_flag = true;
+
 void rplidarCB(const sensor_msgs::LaserScan::ConstPtr &msg)
 {
     double msg_arr[num]={0.0,}; //배열 초기화
@@ -69,80 +66,6 @@ void localPositionCB(const geometry_msgs::PoseStamped::ConstPtr &msg)
     py = msg->pose.position.y;
 }
 
-obstacle_detect::Orientation Detection::orientationDetect()
-{
-    //left right hovering front back
-    // ROS_INFO_STREAM(detect.getLeft());
-    // ROS_INFO_STREAM(detect.getRight());
-    // ROS_INFO_STREAM(detect.getFront());
-    // ROS_INFO_STREAM(detect.getBack());
-    if( detect.getLeft() <= detecting_range ) { this->left = false; hovering(); }
-    if( detect.getRight() <= detecting_range ) { this->right = false; hovering(); }
-    if( detect.getFront() <= detecting_range ) { this->front = false; hovering(); }
-    // if( detect.getBack() <= detecting_range ) { this->back = false; hovering(); }
-    if( detect.getState() == "hovering" )
-    { 
-        if(this->front && detect.getFront() >= detecting_range )
-        {
-            this->right = true;
-            // this->back = true;
-            this->left = true;
-            this->front = true;
-            sec_flag = true;
-            if(this->front)
-                detect.goFront();
-        }
-        //         if(detect.getLeft() >= detecting_range )
-        if(!this->front && detect.getLeft() >= detecting_range )
-        {
-            // this->left = true;
-            if(this->left)
-                detect.goLeft();
-            if( detect.getFront() >= detecting_range)
-                this->front = true;
-        }
-
-        // if(!this->left && detect.getRight() >= detecting_range )
-        if(!this->front && !this->left && detect.getRight() >= detecting_range )
-        {
-            if(this->right)
-                detect.goRight();
-            if( detect.getFront() >= detecting_range)
-                this->front = true;
-        }
-        // if(!this->front && !this->left && !this->right && detect.getBack() >= detecting_range )
-        // {
-        //     sec_flag = false;
-        //     double distance = 10;
-        //     if( abs(sec-psec)>=10 )
-        //     {
-        //         distance = sqrt(pow(x-px, 2.0)+pow(y-py, 2.0));
-        //     }
-        //     if(this->back)
-        //         detect.goBack();
-        //     if(distance <= 2)
-        //     {
-        //         this->right = true;
-        //         this->back = true;
-        //         this->left = true;
-        //         this->front = true;
-        //         sec_flag = true;
-        //     }
-        // }
-        // if( !this->left && !this->right && !this->front && !this->back )
-        if( !this->left && !this->right )
-        {
-            detect.hovering();
-            // printf("------------------------------------------------------------\n");
-            this->right = true;
-            // this->back = true;
-            this->left = true;
-            this->front = true;
-            sec_flag = true;
-        }
-    }
-    return detect.getOrient();
-}
 
 int main(int argc, char **argv)
 {
@@ -152,8 +75,6 @@ int main(int argc, char **argv)
     ros::Subscriber rplidar_sub = nh.subscribe("camila1/laser/scan", 10, &rplidarCB);
     ros::Subscriber local_pose = nh.subscribe("mavros/local_position/pose", 10, &localPositionCB);
     ros::Publisher rplidar_pub = nh.advertise<obstacle_detect::VectorPair>("/vector_pair",10);
-    ros::Publisher orient_pub = nh.advertise<obstacle_detect::Orientation>("/orientation",10);
-    obstacle_detect::Orientation a;
     while (ros::ok())
 	{
         nh.getParamCached("detecting_range", detecting_range);

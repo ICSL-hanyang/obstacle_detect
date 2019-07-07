@@ -23,10 +23,10 @@ void rplidarCB(const sensor_msgs::LaserScan::ConstPtr &msg)
     double msg_arr[num]={0.0,}; //배열 초기화
     uint8_t n = 0;              //카운트용
     uint8_t inf_n = 0;          //무한대카운트용
-    detect.setLeft(msg->ranges[0]);
-    detect.setRight(msg->ranges[180]);
-    detect.setFront(msg->ranges[270]);
-    detect.setBack(msg->ranges[90]);
+    // printf(msg->ranges[0]);
+    // printf(msg->ranges[180]);
+    // printf(msg->ranges[270]);
+    // printf(msg->ranges[90]);
 
     for(uint16_t i = 0; i<360; i++) //0부터 359도에 대한 센서값을 받아오기위해
     {                               
@@ -55,15 +55,6 @@ void rplidarCB(const sensor_msgs::LaserScan::ConstPtr &msg)
 }
 void localPositionCB(const geometry_msgs::PoseStamped::ConstPtr &msg)
 {
-    if(sec_flag)
-    {
-        sec = msg->header.stamp.sec;
-        x = msg->pose.position.x;
-        y = msg->pose.position.y;
-    }
-    psec = msg->header.stamp.sec;
-    px = msg->pose.position.x;
-    py = msg->pose.position.y;
 }
 
 
@@ -80,7 +71,6 @@ int main(int argc, char **argv)
         nh.getParamCached("detecting_range", detecting_range);
         for(uint16_t i=0; i<num; i++)
         {
-            a = detect.orientationDetect();
             // printf("angle : %10lf \t distance : %10lf\n", pair.angle, pair.distance);
             if(rp_arr[i] == std::numeric_limits<double>::infinity())
                 continue;
@@ -94,7 +84,6 @@ int main(int argc, char **argv)
         // else vector_pair.isEmpty = true;
 
         rplidar_pub.publish(vector_pair);
-        orient_pub.publish(a);
         vector_pair.data.clear();
 		ros::spinOnce();
 		rate.sleep();

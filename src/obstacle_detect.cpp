@@ -30,7 +30,6 @@ void rplidarCB(const sensor_msgs::LaserScan::ConstPtr &msg)
 
     for(uint16_t i = 0; i<360; i++) //0부터 359도에 대한 센서값을 받아오기위해
     {                               
-        
         if(msg->ranges[i] != std::numeric_limits<double>::infinity()) msg_arr[n] += msg->ranges[i];
         else inf_n++;
         
@@ -53,10 +52,6 @@ void rplidarCB(const sensor_msgs::LaserScan::ConstPtr &msg)
     }
     // printf("------------------------------------------------------\n");
 }
-void localPositionCB(const geometry_msgs::PoseStamped::ConstPtr &msg)
-{
-}
-
 
 int main(int argc, char **argv)
 {
@@ -64,7 +59,6 @@ int main(int argc, char **argv)
 	ros::NodeHandle nh("");
 	ros::Rate rate(10);
     ros::Subscriber rplidar_sub = nh.subscribe("camila1/laser/scan", 10, &rplidarCB);
-    ros::Subscriber local_pose = nh.subscribe("mavros/local_position/pose", 10, &localPositionCB);
     ros::Publisher rplidar_pub = nh.advertise<obstacle_detect::VectorPair>("/vector_pair",10);
     while (ros::ok())
 	{

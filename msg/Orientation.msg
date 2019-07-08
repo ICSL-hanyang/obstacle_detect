@@ -1,2 +1,0 @@
-string prev
-string curr

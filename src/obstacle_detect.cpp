@@ -24,7 +24,6 @@ void rplidarCB(const sensor_msgs::LaserScan::ConstPtr &msg)
     // printf("270 : %lf\n",msg->ranges[270]);
     for(uint16_t i = 0; i<360; i++) //0부터 359도에 대한 센서값을 받아오기위해
     {                               
-        
         if(msg->ranges[i] != std::numeric_limits<double>::infinity()) msg_arr[n] += msg->ranges[i];
         else inf_n++;
         
@@ -48,12 +47,6 @@ void rplidarCB(const sensor_msgs::LaserScan::ConstPtr &msg)
     // printf("------------------------------------------------------\n");
 }
 
-int orientationDetect()
-{
-    //
-    return 0;
-}
-
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "obstacle_detect_node");
@@ -66,7 +59,6 @@ int main(int argc, char **argv)
         nh.getParamCached("detecting_range", detecting_range);
         for(uint16_t i=0; i<num; i++)
         {
-
             // printf("angle : %10lf \t distance : %10lf\n", pair.angle, pair.distance);
             if(rp_arr[i] == std::numeric_limits<double>::infinity())
                 continue;
@@ -75,9 +67,6 @@ int main(int argc, char **argv)
             // 180/degree(5) = 36 355/degree(5) = 71 
             vector_pair.data.push_back(pair);
         }
-        // if( vector_pair.data.empty()==true ) vector_pair.isEmpty = false;
-        // else vector_pair.isEmpty = true;
-
         rplidar_pub.publish(vector_pair);
         vector_pair.data.clear();
 		ros::spinOnce();

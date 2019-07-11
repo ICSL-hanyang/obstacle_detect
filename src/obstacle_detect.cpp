@@ -8,11 +8,9 @@
 #include <obstacle_detect.h>
 #include "obstacle_detect/Pair.h"
 #include "obstacle_detect/VectorPair.h"
-#include "obstacle_detect/Orientation.h"
 
 obstacle_detect::VectorPair vector_pair;
 obstacle_detect::Pair pair;
-obstacle_detect::Orientation o;
 double rp_arr[360]={0.0,};
 uint8_t degree = 3; // 몇도 마다 자를래
 int num = 360/degree; // 원하는 각도로 잘랐을때 나오는 구역의 수

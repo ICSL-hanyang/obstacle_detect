@@ -14,9 +14,10 @@ obstacle_detect::VectorPair vector_pair;
 obstacle_detect::Pair pair;
 obstacle_detect::Orientation o;
 double rp_arr[360]={0.0,};
-uint8_t degree = 5; // 몇도 마다 자를래
+uint8_t degree = 3; // 몇도 마다 자를래
 int num = 360/degree; // 원하는 각도로 잘랐을때 나오는 구역의 수
 double detecting_range = 2.0;  //detecting_range 보다 작은 값만 받을거다!
+double min = std::numeric_limits<double>::infinity();
 
 void rplidarCB(const sensor_msgs::LaserScan::ConstPtr &msg)
 {
@@ -29,18 +30,31 @@ void rplidarCB(const sensor_msgs::LaserScan::ConstPtr &msg)
     // printf(msg->ranges[90]);
 
     for(uint16_t i = 0; i<360; i++) //0부터 359도에 대한 센서값을 받아오기위해
-    {                               
-        if(msg->ranges[i] != std::numeric_limits<double>::infinity()) msg_arr[n] += msg->ranges[i];
-        else inf_n++;
+    {                        
+        if(i%degree == 0)
+        {
+            // ROS_INFO_STREAM("---------------------------------------------");
+            min = msg->ranges[i];
+        }
+        // ROS_INFO_STREAM(msg->ranges[i]);
+        min =  (min > msg->ranges[i]) ? msg->ranges[i] : min;
+
+        // if(msg->ranges[i] != std::numeric_limits<double>::infinity()) 
+        //     msg_arr[n] += msg->ranges[i];
+        // else inf_n++;
         
         if(i%degree == degree-1)     //360개의 센서를 degree 만큼 나누고 평균낼거임 
         {
-            if(inf_n >= degree) msg_arr[n] = std::numeric_limits<double>::infinity();
-            else msg_arr[n] /= (degree - inf_n);   //0부터 시작하니까 나머지가 degree-1일때 평균내야됨
+            msg_arr[n] = min;
+            // ROS_INFO_STREAM("min : "<<min);
+            // if(inf_n >= degree) 
+            //     msg_arr[n] = std::numeric_limits<double>::infinity();
+            // else 
+            //     msg_arr[n] /= (degree - inf_n);   //0부터 시작하니까 나머지가 degree-1일때 평균내야됨
             // if(i==4)
             //     printf("deg : %d  inf_n : %d  msg : %lf\n", degree, inf_n, msg_arr[n]);
             n++;                    //n은 degree만큼 나눈 구역을 하나하나 검사하기위해 증가해주고
-            inf_n = 0;
+            // inf_n = 0;
             if(n>=num) break;       //0부터 시작하니까 n이 num이 되면 스탑
         }
     }
@@ -62,7 +76,7 @@ int main(int argc, char **argv)
     ros::Publisher rplidar_pub = nh.advertise<obstacle_detect::VectorPair>("/vector_pair",10);
     while (ros::ok())
 	{
-        nh.getParamCached("detecting_range", detecting_range);
+        nh.getParamCached("/swarm_node/setpoint/range_sp", detecting_range);
         for(uint16_t i=0; i<num; i++)
         {
             // printf("angle : %10lf \t distance : %10lf\n", pair.angle, pair.distance);

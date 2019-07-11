@@ -1,6 +1,6 @@
 <launch>
     
-	<arg name="detecting_range" default="2"/>
+	<arg name="detecting_range" default="1.5"/>
 
     <arg name="obstacle_detect_config_yaml" default="$(find obstacle_detect)/config/config.yaml" />
     <node pkg="obstacle_detect" type="obstacle_detect_node" name="obstacle_detect_node" output="screen" respawn="true">

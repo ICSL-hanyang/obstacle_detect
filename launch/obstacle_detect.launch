@@ -1,5 +1,6 @@
 <launch>
     
+<<<<<<< HEAD
 	<arg name="detecting_range" default="2"/>
     <!-- <arg name="user_hostname" default="brontes"/>
     <arg name="user_ip" default="192.168.0.7"/>
@@ -12,6 +13,9 @@
     <arg name="user_name" default="kdh"/>
     <arg name="user_password" default="wkfk"/>
     <arg name="user_envloader" default="~/catkin_ws/devel/env.sh"/>
+=======
+	<arg name="detecting_range" default="1.5"/>
+>>>>>>> 5fdb2a4... 평균이 아닌 최소값으로
 
     <arg name="multi_user_hostname" default="banshee2"/>
     <arg name="multi_user_ip" default="192.168.0.32"/>vg

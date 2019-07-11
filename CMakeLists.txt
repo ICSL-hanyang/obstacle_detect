@@ -21,7 +21,6 @@ add_message_files(
   FILES
   Pair.msg
   VectorPair.msg
-  Orientation.msg
 )
 
 ## Generate services in the 'srv' folder

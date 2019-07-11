@@ -16,7 +16,7 @@ obstacle_detect::Orientation o;
 double rp_arr[360]={0.0,};
 uint8_t degree = 3; // 몇도 마다 자를래
 int num = 360/degree; // 원하는 각도로 잘랐을때 나오는 구역의 수
-double detecting_range = 2.0;  //detecting_range 보다 작은 값만 받을거다!
+double detecting_range = 1.5;  //detecting_range 보다 작은 값만 받을거다!
 double min = std::numeric_limits<double>::infinity();
 
 void rplidarCB(const sensor_msgs::LaserScan::ConstPtr &msg)

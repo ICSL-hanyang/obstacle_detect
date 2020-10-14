@@ -3,7 +3,7 @@
   <name>obstacle_detect</name>
   <version>0.0.0</version>
   <description>The obstacle_detect package</description>
-  <maintainer email="kiminstein@naver.com">sewoong</maintainer>
+  <maintainer email="kiminstein@naver.com">Donghyun Kim</maintainer>
   <license>TODO</license>
 
   <buildtool_depend>catkin</buildtool_depend>l
